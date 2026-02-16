@@ -1,4 +1,4 @@
-# Getting Started with Finance Planner
+# Getting Started with Prism Finance
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ npm run preview
 ## Project Structure
 
 ```
-FinancePlanner/
+prism-finance/
 ├── index.html              # Entry HTML file
 ├── package.json            # Dependencies and scripts
 ├── vite.config.js          # Vite configuration
@@ -63,11 +63,11 @@ FinancePlanner/
 - Automatic calculation of monthly interest based on APR
 
 ### 5. Theme Support
-- Toggle between light and dark themes
+- Choose from multiple themes including Pride-themed options
 - Preference persisted in localStorage
 
 ### 6. Data Persistence
-All data is stored in browser localStorage
+All data is stored securely in PostgreSQL database with user isolation
 
 ### 7. Export Functionality
 - Export all financial data to JSON format
