@@ -2,11 +2,20 @@ import Income from '../models/Income.js';
 import Expense from '../models/Expense.js';
 import Savings from '../models/Savings.js';
 import Financial from '../models/Financial.js';
+import RecurringPaymentService from '../services/RecurringPaymentService.js';
 
 // Income Controllers
 export const getIncomes = async (req, res) => {
   try {
     const incomes = await Income.findByUserId(req.user.id);
+    
+    // If month parameter is provided, generate recurring entries for that month
+    if (req.query.month) {
+      const targetMonth = new Date(req.query.month);
+      const generatedIncomes = RecurringPaymentService.generateForMonth(incomes, targetMonth);
+      return res.json({ incomes: generatedIncomes });
+    }
+    
     res.json({ incomes });
   } catch (error) {
     console.error('Get incomes error:', error);
@@ -16,6 +25,14 @@ export const getIncomes = async (req, res) => {
 
 export const createIncome = async (req, res) => {
   try {
+    // Validate recurring payment data
+    if (req.body.recurring) {
+      const validation = RecurringPaymentService.validate(req.body);
+      if (!validation.valid) {
+        return res.status(400).json({ error: validation.errors.join(', ') });
+      }
+    }
+    
     const income = await Income.create(req.user.id, req.body);
     res.status(201).json({ 
       message: 'Income created successfully',
@@ -29,6 +46,14 @@ export const createIncome = async (req, res) => {
 
 export const updateIncome = async (req, res) => {
   try {
+    // Validate recurring payment data
+    if (req.body.recurring) {
+      const validation = RecurringPaymentService.validate(req.body);
+      if (!validation.valid) {
+        return res.status(400).json({ error: validation.errors.join(', ') });
+      }
+    }
+    
     const income = await Income.update(req.params.id, req.user.id, req.body);
     if (!income) {
       return res.status(404).json({ error: 'Income not found' });
@@ -57,7 +82,20 @@ export const deleteIncome = async (req, res) => {
 export const getExpenses = async (req, res) => {
   try {
     const expenses = await Expense.findByUserId(req.user.id);
+    
+    // If month parameter is provided, generate recurring entries for that month
+    if (req.query.month) {
+      const targetMonth = new Date(req.query.month);
+      const generatedExpenses = RecurringPaymentService.generateForMonth(expenses, targetMonth);
+      return res.json({ expenses: generatedExpenses });
+    }
+    
     res.json({ expenses });
+  } catch (error) {
+    console.error('Get expenses error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
   } catch (error) {
     console.error('Get expenses error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -66,6 +104,14 @@ export const getExpenses = async (req, res) => {
 
 export const createExpense = async (req, res) => {
   try {
+    // Validate recurring payment data
+    if (req.body.recurring) {
+      const validation = RecurringPaymentService.validate(req.body);
+      if (!validation.valid) {
+        return res.status(400).json({ error: validation.errors.join(', ') });
+      }
+    }
+    
     const expense = await Expense.create(req.user.id, req.body);
     res.status(201).json({ 
       message: 'Expense created successfully',
@@ -79,6 +125,14 @@ export const createExpense = async (req, res) => {
 
 export const updateExpense = async (req, res) => {
   try {
+    // Validate recurring payment data
+    if (req.body.recurring) {
+      const validation = RecurringPaymentService.validate(req.body);
+      if (!validation.valid) {
+        return res.status(400).json({ error: validation.errors.join(', ') });
+      }
+    }
+    
     const expense = await Expense.update(req.params.id, req.user.id, req.body);
     if (!expense) {
       return res.status(404).json({ error: 'Expense not found' });

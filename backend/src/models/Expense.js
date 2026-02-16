@@ -1,12 +1,12 @@
 import pool from '../config/database.js';
 
 class Expense {
-  static async create(userId, { amount, category, date, recurring, notes }) {
+  static async create(userId, { amount, category, date, recurring, notes, frequency, start_date, end_date, name, label }) {
     const result = await pool.query(
-      `INSERT INTO expenses (user_id, amount, category, date, recurring, notes) 
-       VALUES ($1, $2, $3, $4, $5, $6) 
+      `INSERT INTO expenses (user_id, amount, category, date, recurring, notes, frequency, start_date, end_date, name, label) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
        RETURNING *`,
-      [userId, amount, category, date, recurring, notes]
+      [userId, amount, category, date, recurring, notes, frequency || 'monthly', start_date || date, end_date, name, label]
     );
     return result.rows[0];
   }
@@ -28,13 +28,14 @@ class Expense {
   }
 
   static async update(id, userId, data) {
-    const { amount, category, date, recurring, notes } = data;
+    const { amount, category, date, recurring, notes, frequency, start_date, end_date, name, label } = data;
     const result = await pool.query(
       `UPDATE expenses 
-       SET amount = $1, category = $2, date = $3, recurring = $4, notes = $5, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $6 AND user_id = $7 
+       SET amount = $1, category = $2, date = $3, recurring = $4, notes = $5, 
+           frequency = $6, start_date = $7, end_date = $8, name = $9, label = $10, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $11 AND user_id = $12 
        RETURNING *`,
-      [amount, category, date, recurring, notes, id, userId]
+      [amount, category, date, recurring, notes, frequency || 'monthly', start_date || date, end_date, name, label, id, userId]
     );
     return result.rows[0];
   }
