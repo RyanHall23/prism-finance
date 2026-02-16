@@ -197,10 +197,11 @@ export const ThemeProvider = ({ children }) => {
     })),
     chartColors,
     // Backwards compatibility - expose old selectedTheme API
-    selectedTheme: prideTheme !== 'none' ? prideTheme : effectiveBaseMode,
+    // Returns the base mode when no pride theme is active
+    selectedTheme: prideTheme === 'none' ? effectiveBaseMode : prideTheme,
     setSelectedTheme: (themeKey) => {
       // Check if it's a pride theme
-      if (prideThemes[themeKey]) {
+      if (prideThemes[themeKey] && themeKey !== 'none') {
         setPrideTheme(themeKey);
       } else if (themeKey === 'light' || themeKey === 'dark') {
         setBaseMode(themeKey);
