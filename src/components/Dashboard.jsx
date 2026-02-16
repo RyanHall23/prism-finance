@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Grid, Tabs, Tab, Button, Stack } from '@mui/material';
 import { FileDownload } from '@mui/icons-material';
 import MonthSelector from './MonthSelector.jsx';
@@ -10,6 +10,7 @@ import SavingsSection from './SavingsSection.jsx';
 import OverdraftSection from './OverdraftSection.jsx';
 import CreditCardSection from './CreditCardSection.jsx';
 import { exportToJSON } from '../utils/calculations.js';
+import { generateRecurringEntriesForMonth } from '../utils/recurringPayments.js';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState(0);
@@ -66,6 +67,17 @@ function Dashboard() {
     setActiveTab(newValue);
   };
 
+  // Generate recurring entries for the selected month
+  const monthlyIncomes = useMemo(() => 
+    generateRecurringEntriesForMonth(incomes, selectedMonth),
+    [incomes, selectedMonth]
+  );
+
+  const monthlyExpenses = useMemo(() => 
+    generateRecurringEntriesForMonth(expenses, selectedMonth),
+    [expenses, selectedMonth]
+  );
+
   const handleExportJSON = () => {
     const allData = {
       incomes,
@@ -95,16 +107,16 @@ function Dashboard() {
       </Stack>
 
       <OverviewCards
-        incomes={incomes}
-        expenses={expenses}
+        incomes={monthlyIncomes}
+        expenses={monthlyExpenses}
         savings={savings}
         overdraft={overdraft}
         creditCard={creditCard}
       />
 
       <FinancialProjectionChart
-        incomes={incomes}
-        expenses={expenses}
+        incomes={monthlyIncomes}
+        expenses={monthlyExpenses}
         savings={savings}
         selectedMonth={selectedMonth}
         overdraft={overdraft}

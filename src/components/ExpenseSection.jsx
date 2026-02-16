@@ -37,10 +37,21 @@ function ExpenseSection({ expenses, setExpenses }) {
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    const newValue = type === 'checkbox' ? checked : value;
+    
+    // Auto-sync date field with start_date for consistency
+    if (name === 'start_date') {
+      setFormData({
+        ...formData,
+        [name]: newValue,
+        date: newValue, // Keep date in sync with start_date
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: newValue,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -128,17 +139,6 @@ function ExpenseSection({ expenses, setExpenses }) {
             <Grid item xs={12} sm={6} md={4}>
               <TextField
                 fullWidth
-                label="Date"
-                name="date"
-                type="date"
-                value={formData.date}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                fullWidth
                 label="Name"
                 name="name"
                 value={formData.name}
@@ -156,6 +156,19 @@ function ExpenseSection({ expenses, setExpenses }) {
                 onChange={handleChange}
                 placeholder="e.g., Entertainment, Housing"
                 helperText="Category or label"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                label={formData.recurring ? "Start Date" : "Date"}
+                name="start_date"
+                type="date"
+                value={formData.start_date}
+                onChange={handleChange}
+                InputLabelProps={{ shrink: true }}
+                helperText={formData.recurring ? "When does this payment start?" : "Payment date"}
+                required
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
@@ -185,18 +198,6 @@ function ExpenseSection({ expenses, setExpenses }) {
                     <MenuItem value="monthly">Monthly</MenuItem>
                     <MenuItem value="yearly">Yearly</MenuItem>
                   </TextField>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                  <TextField
-                    fullWidth
-                    label="Start Date"
-                    name="start_date"
-                    type="date"
-                    value={formData.start_date}
-                    onChange={handleChange}
-                    InputLabelProps={{ shrink: true }}
-                    helperText="When does this payment start?"
-                  />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                   <TextField
