@@ -96,11 +96,6 @@ export const getExpenses = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-  } catch (error) {
-    console.error('Get expenses error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
 
 export const createExpense = async (req, res) => {
   try {

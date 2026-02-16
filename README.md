@@ -219,11 +219,36 @@ JWT_EXPIRES_IN=7d
 FRONTEND_URL=http://localhost:3000
 ```
 
+## Recent Updates
+
+### 🎨 Pride Theme System
+Prism Finance now includes a beautiful theme system with multiple options:
+- **Light & Dark** - Classic professional themes
+- **Trans Pride** - Light blue, pink, and white color scheme
+- **Bi Pride** - Magenta, purple, and blue color scheme  
+- **Rainbow Pride** - Full spectrum rainbow theme
+- **Non-Binary** - Yellow, white, purple, and grey theme
+- **Lesbian Pride** - Orange and pink color scheme
+
+All themes are WCAG contrast compliant and professionally designed for fintech use.
+
+### 💰 Enhanced Recurring Payments
+- **Dynamic Frequency** - Set payments to weekly, monthly, or yearly
+- **Start & End Dates** - Define when recurring payments begin and end
+- **Name & Label System** - Separate payment names (e.g., "Netflix") from labels (e.g., "Subscription")
+- **Smart Generation** - Recurring payments are calculated dynamically per month
+- **Backward Compatible** - Existing data remains functional
+
+### 🏗 Improved Architecture
+- Clean service layer for business logic
+- All calculations handled server-side
+- Modular controller/model/service structure
+- Comprehensive API for recurring payment management
+
 ## Future Enhancements
 
 - Open Banking API integration
 - Transaction import/export (CSV/OFX)
-- Recurring payment automation
 - Budget alerts and notifications
 - Multi-currency support
 - Financial reports and charts
