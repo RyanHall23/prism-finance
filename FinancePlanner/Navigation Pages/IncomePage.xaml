@@ -1,0 +1,26 @@
+﻿<Page x:Class="FinancePlanner.Navigation_Pages.IncomePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:FinancePlanner.Navigation_Pages"
+      mc:Ignorable="d"
+      d:DesignHeight="1019" d:DesignWidth="1727" Language="en-GB"
+      Title="IncomePage">
+
+  <Grid>
+    <Label x:Name="lblIncome" Content="Income" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
+           FontSize="24" />
+    <Label x:Name="lblDateTime" Content="" HorizontalAlignment="Left" Margin="1600,985,0,0" VerticalAlignment="Top" />
+    <Label x:Name="lblSalary" Content="Salary (Year) :" HorizontalAlignment="Left" Margin="10,68,0,0"
+           VerticalAlignment="Top" RenderTransformOrigin="0.468,0.513" />
+    <TextBox x:Name="txtSalary" HorizontalAlignment="Left" Height="23" Margin="10,111,0,0" TextWrapping="Wrap"
+             VerticalAlignment="Top" Width="120" />
+    <Button x:Name="btnConfSalary" Content="Confirm" HorizontalAlignment="Left" Margin="182,111,0,0"
+            VerticalAlignment="Top" Width="75" Click="BtnConfSalary_Click" />
+    <Label x:Name="lblSalaryMonth" Content="Salary (Month) :" HorizontalAlignment="Left" Margin="10,155,0,0"
+           VerticalAlignment="Top" RenderTransformOrigin="0.468,0.513" />
+    <Label x:Name="lblSalaryMonthAmt" Content="{Binding Amount}" ContentStringFormat="C" HorizontalAlignment="Left"
+           Margin="115,155,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.468,0.513" />
+  </Grid>
+</Page>

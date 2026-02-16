@@ -1,0 +1,30 @@
+﻿<Page x:Class="FinancePlanner.Navigation_Pages.PensionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:FinancePlanner.Navigation_Pages"
+      mc:Ignorable="d"
+      d:DesignHeight="1019" d:DesignWidth="1727" Language="en-GB"
+      Title="PensionPage">
+
+  <Grid>
+    <Label x:Name="lblPension" Content="Pension" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
+           FontSize="24" />
+    <Label x:Name="lblDateTime" Content="" HorizontalAlignment="Left" Margin="1600,985,0,0" VerticalAlignment="Top" />
+    <Label x:Name="lblPensionYearly" Content="Pension (Year) :" HorizontalAlignment="Left" Margin="10,95,0,0"
+           VerticalAlignment="Top" />
+    <Label x:Name="lblPensionYearlyAmt" Content="0.00" HorizontalAlignment="Left" Margin="130,95,0,0"
+           VerticalAlignment="Top" />
+    <Label x:Name="lblPensionMonthly" Content="Pension (Monthly) :" HorizontalAlignment="Left" Margin="10,135,0,0"
+           VerticalAlignment="Top" />
+    <Label x:Name="lblPensionMonthAmt" Content="0.00" HorizontalAlignment="Left" Margin="130,135,0,0"
+           VerticalAlignment="Top" />
+    <Label x:Name="lblPensionMonthlyU" Content="Pension (Percentage) :" HorizontalAlignment="Left" Margin="15,218,0,0"
+           VerticalAlignment="Top" />
+    <TextBox x:Name="txtPensionPercent" HorizontalAlignment="Left" Height="23" Margin="15,244,0,0"
+             TextWrapping="Wrap" VerticalAlignment="Top" Width="120" />
+    <Button x:Name="btnConfMonthlyPension" Content="Confirm" HorizontalAlignment="Left" Margin="159,244,0,0"
+            VerticalAlignment="Top" Width="75" Click="BtnConfMonthlyPension_Click" />
+  </Grid>
+</Page>
