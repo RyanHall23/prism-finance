@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import React, { useState } from 'react';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box, Container } from '@mui/material';
 import Dashboard from './components/Dashboard.jsx';
@@ -8,13 +8,11 @@ import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import AccountPage from './pages/AccountPage.jsx';
 import { authAPI } from './services/api.js';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext.jsx';
 
-function App() {
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    return savedMode ? JSON.parse(savedMode) : false;
-  });
-
+function AppContent() {
+  const { theme } = useTheme();
+  
   const [user, setUser] = useState(() => {
     const token = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('user');
@@ -23,26 +21,6 @@ function App() {
 
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [showRegister, setShowRegister] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
-  }, [darkMode]);
-
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? 'dark' : 'light',
-      primary: {
-        main: '#1976d2',
-      },
-      secondary: {
-        main: '#dc004e',
-      },
-    },
-  });
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
 
   const handleLogin = (loggedInUser) => {
     setUser(loggedInUser);
@@ -84,34 +62,32 @@ function App() {
   if (!user) {
     if (showRegister) {
       return (
-        <ThemeProvider theme={theme}>
+        <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <RegisterPage 
             onRegister={handleRegister}
             onShowLogin={handleShowLogin}
           />
-        </ThemeProvider>
+        </MuiThemeProvider>
       );
     }
     return (
-      <ThemeProvider theme={theme}>
+      <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <LoginPage 
           onLogin={handleLogin}
           onShowRegister={handleShowRegister}
         />
-      </ThemeProvider>
+      </MuiThemeProvider>
     );
   }
 
   // Show authenticated pages
   return (
-    <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
         <Header 
-          darkMode={darkMode} 
-          toggleDarkMode={toggleDarkMode}
           user={user}
           onLogout={handleLogout}
           onAccountClick={handleAccountClick}
@@ -128,6 +104,14 @@ function App() {
           </Container>
         )}
       </Box>
+    </MuiThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }
