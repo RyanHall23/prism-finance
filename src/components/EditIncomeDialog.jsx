@@ -1,54 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button,
   TextField,
   FormControlLabel,
   Checkbox,
-  Paper,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
   MenuItem,
   Grid,
 } from '@mui/material';
-import { Delete, Add, Edit } from '@mui/icons-material';
-import { formatCurrency } from '../utils/calculations.js';
-import EditIncomeDialog from './EditIncomeDialog.jsx';
 
-function IncomeSection({ incomes, setIncomes }) {
-  const [showForm, setShowForm] = useState(false);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editingIncome, setEditingIncome] = useState(null);
+function EditIncomeDialog({ open, onClose, income, onSave }) {
   const [formData, setFormData] = useState({
     amount: '',
     category: 'Salary',
-    date: new Date().toISOString().split('T')[0],
-    recurring: true,
+    date: '',
+    recurring: false,
     notes: '',
     payDay: 25,
     name: '',
     label: '',
     frequency: 'monthly',
-    start_date: new Date().toISOString().split('T')[0],
+    start_date: '',
     end_date: '',
   });
+
+  useEffect(() => {
+    if (income) {
+      setFormData({
+        amount: income.amount || '',
+        category: income.category || 'Salary',
+        date: income.date || new Date().toISOString().split('T')[0],
+        recurring: income.recurring || false,
+        notes: income.notes || '',
+        payDay: income.payDay || 25,
+        name: income.name || '',
+        label: income.label || '',
+        frequency: income.frequency || 'monthly',
+        start_date: income.start_date || income.date || new Date().toISOString().split('T')[0],
+        end_date: income.end_date || '',
+      });
+    }
+  }, [income]);
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
     
-    // Auto-sync date field with start_date for consistency
     if (name === 'start_date') {
       setFormData({
         ...formData,
         [name]: newValue,
-        date: newValue, // Keep date in sync with start_date
+        date: newValue,
       });
     } else {
       setFormData({
@@ -65,66 +70,22 @@ function IncomeSection({ incomes, setIncomes }) {
       return;
     }
 
-    const newIncome = {
-      id: Date.now(),
+    const updatedIncome = {
+      ...income,
       ...formData,
       amount: parseFloat(formData.amount),
     };
 
-    setIncomes([...incomes, newIncome]);
-    setFormData({
-      amount: '',
-      category: 'Salary',
-      date: new Date().toISOString().split('T')[0],
-      recurring: true,
-      notes: '',
-      payDay: 25,
-      name: '',
-      label: '',
-      frequency: 'monthly',
-      start_date: new Date().toISOString().split('T')[0],
-      end_date: '',
-    });
-    setShowForm(false); // Hide form after adding
-  };
-
-  const handleDelete = (id) => {
-    setIncomes(incomes.filter((income) => income.id !== id));
-  };
-
-  const handleEdit = (income) => {
-    setEditingIncome(income);
-    setEditDialogOpen(true);
-  };
-
-  const handleSaveEdit = (updatedIncome) => {
-    setIncomes(incomes.map((income) => 
-      income.id === updatedIncome.id ? updatedIncome : income
-    ));
-    setEditDialogOpen(false);
-    setEditingIncome(null);
+    onSave(updatedIncome);
   };
 
   const categories = ['Salary', 'Bonus', 'Freelance', 'Investment', 'Gift', 'Other'];
 
   return (
-    <Box>
-      <Box sx={{ mb: 2 }}>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Hide Form' : 'Add Income'}
-        </Button>
-      </Box>
-
-      {showForm && (
-        <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Add Income
-          </Typography>
-        <form onSubmit={handleSubmit}>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>Edit Income</DialogTitle>
+      <form onSubmit={handleSubmit}>
+        <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} md={4}>
               <TextField
@@ -256,85 +217,17 @@ function IncomeSection({ incomes, setIncomes }) {
                 rows={2}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Button type="submit" variant="contained" startIcon={<Add />}>
-                Add Income
-              </Button>
-            </Grid>
           </Grid>
-        </form>
-      </Paper>
-      )}
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Amount</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Label</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Recurring</TableCell>
-              <TableCell>Frequency</TableCell>
-              <TableCell>Notes</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {incomes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={9} align="center">
-                  No income entries yet
-                </TableCell>
-              </TableRow>
-            ) : (
-              incomes.map((income) => (
-                <TableRow key={income.id}>
-                  <TableCell>{formatCurrency(income.amount)}</TableCell>
-                  <TableCell>{income.name || '-'}</TableCell>
-                  <TableCell>{income.label || '-'}</TableCell>
-                  <TableCell>{income.category}</TableCell>
-                  <TableCell>{income.date}</TableCell>
-                  <TableCell>{income.recurring ? 'Yes' : 'No'}</TableCell>
-                  <TableCell>{income.recurring ? (income.frequency || 'Monthly') : '-'}</TableCell>
-                  <TableCell>{income.notes || '-'}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleEdit(income)}
-                      size="small"
-                      title="Edit"
-                    >
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDelete(income.id)}
-                      size="small"
-                      title="Delete"
-                    >
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <EditIncomeDialog
-        open={editDialogOpen}
-        onClose={() => {
-          setEditDialogOpen(false);
-          setEditingIncome(null);
-        }}
-        income={editingIncome}
-        onSave={handleSaveEdit}
-      />
-    </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="submit" variant="contained">
+            Save Changes
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 }
 
-export default IncomeSection;
+export default EditIncomeDialog;
