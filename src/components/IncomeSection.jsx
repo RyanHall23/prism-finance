@@ -29,6 +29,11 @@ function IncomeSection({ incomes, setIncomes }) {
     recurring: true,
     notes: '',
     payDay: 25,
+    name: '',
+    label: '',
+    frequency: 'monthly',
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: '',
   });
 
   const handleChange = (e) => {
@@ -60,6 +65,11 @@ function IncomeSection({ incomes, setIncomes }) {
       recurring: true,
       notes: '',
       payDay: 25,
+      name: '',
+      label: '',
+      frequency: 'monthly',
+      start_date: new Date().toISOString().split('T')[0],
+      end_date: '',
     });
     setShowForm(false); // Hide form after adding
   };
@@ -128,6 +138,28 @@ function IncomeSection({ incomes, setIncomes }) {
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g., Company Salary"
+                helperText="Specific payment name"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                label="Label"
+                name="label"
+                value={formData.label}
+                onChange={handleChange}
+                placeholder="e.g., Employment, Bonus"
+                helperText="Category or label"
+              />
+            </Grid>
             {formData.category === 'Salary' && (
               <Grid item xs={12} sm={6} md={4}>
                 <TextField
@@ -154,6 +186,48 @@ function IncomeSection({ incomes, setIncomes }) {
                 label="Recurring"
               />
             </Grid>
+            {formData.recurring && (
+              <>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    fullWidth
+                    select
+                    label="Frequency"
+                    name="frequency"
+                    value={formData.frequency}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="weekly">Weekly</MenuItem>
+                    <MenuItem value="monthly">Monthly</MenuItem>
+                    <MenuItem value="yearly">Yearly</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    fullWidth
+                    label="Start Date"
+                    name="start_date"
+                    type="date"
+                    value={formData.start_date}
+                    onChange={handleChange}
+                    InputLabelProps={{ shrink: true }}
+                    helperText="When does this payment start?"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    fullWidth
+                    label="End Date (Optional)"
+                    name="end_date"
+                    type="date"
+                    value={formData.end_date}
+                    onChange={handleChange}
+                    InputLabelProps={{ shrink: true }}
+                    helperText="Leave empty for indefinite"
+                  />
+                </Grid>
+              </>
+            )}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -180,9 +254,12 @@ function IncomeSection({ incomes, setIncomes }) {
           <TableHead>
             <TableRow>
               <TableCell>Amount</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Label</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Recurring</TableCell>
+              <TableCell>Frequency</TableCell>
               <TableCell>Notes</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -190,7 +267,7 @@ function IncomeSection({ incomes, setIncomes }) {
           <TableBody>
             {incomes.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={9} align="center">
                   No income entries yet
                 </TableCell>
               </TableRow>
@@ -198,9 +275,12 @@ function IncomeSection({ incomes, setIncomes }) {
               incomes.map((income) => (
                 <TableRow key={income.id}>
                   <TableCell>{formatCurrency(income.amount)}</TableCell>
+                  <TableCell>{income.name || '-'}</TableCell>
+                  <TableCell>{income.label || '-'}</TableCell>
                   <TableCell>{income.category}</TableCell>
                   <TableCell>{income.date}</TableCell>
                   <TableCell>{income.recurring ? 'Yes' : 'No'}</TableCell>
+                  <TableCell>{income.recurring ? (income.frequency || 'Monthly') : '-'}</TableCell>
                   <TableCell>{income.notes || '-'}</TableCell>
                   <TableCell>
                     <IconButton
