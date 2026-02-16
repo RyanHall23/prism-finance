@@ -1,7 +1,7 @@
 {
-  "name": "finance-planner",
+  "name": "prism-finance",
   "version": "1.0.0",
-  "description": "A personal finance planner tool built with React and Material-UI",
+  "description": "A modern personal finance management application built with React and Material-UI",
   "private": true,
   "type": "module",
   "scripts": {

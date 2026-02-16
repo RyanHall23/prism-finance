@@ -31,26 +31,20 @@ export const calculateMonthlyInterest = (balance, apr) => {
 };
 
 /**
- * Calculate total monthly income including recurring items
+ * Calculate total for entries (works with expanded recurring entries)
  */
 export const calculateTotalMonthlyIncome = (incomes) => {
   return incomes.reduce((total, income) => {
-    if (income.recurring || isInCurrentMonth(income.date)) {
-      return total + parseFloat(income.amount || 0);
-    }
-    return total;
+    return total + parseFloat(income.amount || 0);
   }, 0);
 };
 
 /**
- * Calculate total monthly expenses including recurring items
+ * Calculate total for expenses (works with expanded recurring entries)
  */
 export const calculateTotalMonthlyExpenses = (expenses) => {
   return expenses.reduce((total, expense) => {
-    if (expense.recurring || isInCurrentMonth(expense.date)) {
-      return total + parseFloat(expense.amount || 0);
-    }
-    return total;
+    return total + parseFloat(expense.amount || 0);
   }, 0);
 };
 

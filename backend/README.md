@@ -1,6 +1,6 @@
-# Finance Planner Backend API
+# Prism Finance Backend API
 
-Secure backend API for the Finance Planner application with PostgreSQL database, JWT authentication, and encrypted data storage.
+Secure backend API for the Prism Finance application with PostgreSQL database, JWT authentication, and encrypted data storage.
 
 ## Features
 

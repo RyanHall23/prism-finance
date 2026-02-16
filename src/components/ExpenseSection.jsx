@@ -28,14 +28,30 @@ function ExpenseSection({ expenses, setExpenses }) {
     date: new Date().toISOString().split('T')[0],
     recurring: true,
     notes: '',
+    name: '',
+    label: '',
+    frequency: 'monthly',
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: '',
   });
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    const newValue = type === 'checkbox' ? checked : value;
+    
+    // Auto-sync date field with start_date for consistency
+    if (name === 'start_date') {
+      setFormData({
+        ...formData,
+        [name]: newValue,
+        date: newValue, // Keep date in sync with start_date
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: newValue,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -58,6 +74,11 @@ function ExpenseSection({ expenses, setExpenses }) {
       date: new Date().toISOString().split('T')[0],
       recurring: true,
       notes: '',
+      name: '',
+      label: '',
+      frequency: 'monthly',
+      start_date: new Date().toISOString().split('T')[0],
+      end_date: '',
     });
     setShowForm(false); // Hide form after adding
   };
@@ -118,12 +139,36 @@ function ExpenseSection({ expenses, setExpenses }) {
             <Grid item xs={12} sm={6} md={4}>
               <TextField
                 fullWidth
-                label="Date"
-                name="date"
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g., Netflix, Spotify"
+                helperText="Specific payment name"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                label="Label"
+                name="label"
+                value={formData.label}
+                onChange={handleChange}
+                placeholder="e.g., Entertainment, Housing"
+                helperText="Category or label"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                label={formData.recurring ? "Start Date" : "Date"}
+                name="start_date"
                 type="date"
-                value={formData.date}
+                value={formData.start_date}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                helperText={formData.recurring ? "When does this payment start?" : "Payment date"}
+                required
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
@@ -138,6 +183,36 @@ function ExpenseSection({ expenses, setExpenses }) {
                 label="Recurring"
               />
             </Grid>
+            {formData.recurring && (
+              <>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    fullWidth
+                    select
+                    label="Frequency"
+                    name="frequency"
+                    value={formData.frequency}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="weekly">Weekly</MenuItem>
+                    <MenuItem value="monthly">Monthly</MenuItem>
+                    <MenuItem value="yearly">Yearly</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    fullWidth
+                    label="End Date (Optional)"
+                    name="end_date"
+                    type="date"
+                    value={formData.end_date}
+                    onChange={handleChange}
+                    InputLabelProps={{ shrink: true }}
+                    helperText="Leave empty for indefinite"
+                  />
+                </Grid>
+              </>
+            )}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -164,9 +239,12 @@ function ExpenseSection({ expenses, setExpenses }) {
           <TableHead>
             <TableRow>
               <TableCell>Amount</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Label</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Recurring</TableCell>
+              <TableCell>Frequency</TableCell>
               <TableCell>Notes</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -174,7 +252,7 @@ function ExpenseSection({ expenses, setExpenses }) {
           <TableBody>
             {expenses.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={9} align="center">
                   No expense entries yet
                 </TableCell>
               </TableRow>
@@ -182,9 +260,12 @@ function ExpenseSection({ expenses, setExpenses }) {
               expenses.map((expense) => (
                 <TableRow key={expense.id}>
                   <TableCell>{formatCurrency(expense.amount)}</TableCell>
+                  <TableCell>{expense.name || '-'}</TableCell>
+                  <TableCell>{expense.label || '-'}</TableCell>
                   <TableCell>{expense.category}</TableCell>
                   <TableCell>{expense.date}</TableCell>
                   <TableCell>{expense.recurring ? 'Yes' : 'No'}</TableCell>
+                  <TableCell>{expense.recurring ? (expense.frequency || 'Monthly') : '-'}</TableCell>
                   <TableCell>{expense.notes || '-'}</TableCell>
                   <TableCell>
                     <IconButton

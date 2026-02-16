@@ -1,18 +1,18 @@
-# Finance Planner
+# Prism Finance
 
-A modern full-stack personal finance planner built with React, Material-UI, Node.js, and PostgreSQL. Secure multi-user application with JWT authentication.
+A modern full-stack personal finance management application built with React, Material-UI, Node.js, and PostgreSQL. Secure multi-user application with JWT authentication and dynamic theming.
 
 ## Features
 
 - 🔐 **Multi-User Authentication** - Secure JWT-based login system
 - 📊 **Dashboard Overview** - Visual summary of your financial status with real-time calculations
 - 💰 **Income Tracking** - Track salaries, bonuses, and other income sources with recurring and one-off entries
-- 💸 **Expense Management** - Manage subscriptions, bills, rent, and other expenses
+- 💸 **Expense Management** - Manage subscriptions, bills, rent, and other expenses with smart categorization
 - 🏦 **Savings Goals** - Track multiple savings accounts with monthly deposits and goal progress
 - 🔴 **Overdraft Tracking** - Monitor overdraft usage with APR-based interest calculations
 - 💳 **Credit Card Management** - Track credit card balances and projected interest
 - 👤 **Account Management** - Update profile, change password, delete account
-- 🌓 **Dark/Light Theme** - Toggle between themes with persistent preference
+- 🌈 **Pride Theme System** - Choose from multiple beautiful themes including Pride-themed options
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
 - 🔒 **Secure** - Encrypted passwords, protected API endpoints, HTTPS ready
 
@@ -42,8 +42,8 @@ A modern full-stack personal finance planner built with React, Material-UI, Node
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/RyanHall23/FinancePlanner.git
-cd FinancePlanner
+git clone https://github.com/RyanHall23/prism-finance.git
+cd prism-finance
 ```
 
 2. **Backend Setup:**
@@ -154,7 +154,7 @@ monthsToGoal = ⌈(goal - currentBalance) / monthlyDeposit⌉
 
 ### Project Structure
 ```
-FinancePlanner/
+prism-finance/
 ├── backend/              # Node.js API server
 │   ├── src/
 │   │   ├── config/      # Database & config
@@ -211,7 +211,7 @@ PORT=5000
 NODE_ENV=development
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=finance_planner
+DB_NAME=prism_finance
 DB_USER=postgres
 DB_PASSWORD=your_password
 JWT_SECRET=your_jwt_secret
@@ -219,11 +219,36 @@ JWT_EXPIRES_IN=7d
 FRONTEND_URL=http://localhost:3000
 ```
 
+## Recent Updates
+
+### 🎨 Pride Theme System
+Prism Finance now includes a beautiful theme system with multiple options:
+- **Light & Dark** - Classic professional themes
+- **Trans Pride** - Light blue, pink, and white color scheme
+- **Bi Pride** - Magenta, purple, and blue color scheme  
+- **Rainbow Pride** - Full spectrum rainbow theme
+- **Non-Binary** - Yellow, white, purple, and grey theme
+- **Lesbian Pride** - Orange and pink color scheme
+
+All themes are WCAG contrast compliant and professionally designed for fintech use.
+
+### 💰 Enhanced Recurring Payments
+- **Dynamic Frequency** - Set payments to weekly, monthly, or yearly
+- **Start & End Dates** - Define when recurring payments begin and end
+- **Name & Label System** - Separate payment names (e.g., "Netflix") from labels (e.g., "Subscription")
+- **Smart Generation** - Recurring payments are calculated dynamically per month
+- **Backward Compatible** - Existing data remains functional
+
+### 🏗 Improved Architecture
+- Clean service layer for business logic
+- All calculations handled server-side
+- Modular controller/model/service structure
+- Comprehensive API for recurring payment management
+
 ## Future Enhancements
 
 - Open Banking API integration
 - Transaction import/export (CSV/OFX)
-- Recurring payment automation
 - Budget alerts and notifications
 - Multi-currency support
 - Financial reports and charts

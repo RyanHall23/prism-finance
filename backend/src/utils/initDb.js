@@ -17,7 +17,7 @@ const initializeDatabase = async () => {
 
   try {
     await adminClient.connect();
-    const dbName = process.env.DB_NAME || 'finance_planner';
+    const dbName = process.env.DB_NAME || 'prism_finance';
     
     // Check if database exists
     const result = await adminClient.query(

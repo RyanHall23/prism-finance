@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, Paper, Typography, useTheme } from '@mui/material';
+import { Box, Paper, Typography, useTheme as useMuiTheme } from '@mui/material';
 import {
   LineChart,
   Line,
@@ -19,9 +19,11 @@ import {
   isSameDay,
   parseISO 
 } from 'date-fns';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 function FinancialProjectionChart({ incomes, expenses, savings, selectedMonth, overdraft, creditCard }) {
-  const theme = useTheme();
+  const muiTheme = useMuiTheme();
+  const { chartColors } = useTheme();
 
   const chartData = useMemo(() => {
     const monthStart = startOfMonth(selectedMonth);
@@ -105,24 +107,24 @@ function FinancialProjectionChart({ incomes, expenses, savings, selectedMonth, o
       </Typography>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+          <CartesianGrid strokeDasharray="3 3" stroke={muiTheme.palette.divider} />
           <XAxis 
             dataKey="date" 
-            stroke={theme.palette.text.secondary}
+            stroke={muiTheme.palette.text.secondary}
             tick={{ fontSize: 12 }}
           />
           <YAxis 
-            stroke={theme.palette.text.secondary}
+            stroke={muiTheme.palette.text.secondary}
             tick={{ fontSize: 12 }}
             tickFormatter={(value) => `£${value}`}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <ReferenceLine y={0} stroke={theme.palette.error.main} strokeDasharray="3 3" />
+          <ReferenceLine y={0} stroke={muiTheme.palette.error.main} strokeDasharray="3 3" />
           <Line
             type="monotone"
             dataKey="income"
-            stroke={theme.palette.success.main}
+            stroke={chartColors[2]}
             strokeWidth={2}
             name="Income"
             dot={false}
@@ -130,7 +132,7 @@ function FinancialProjectionChart({ incomes, expenses, savings, selectedMonth, o
           <Line
             type="monotone"
             dataKey="expense"
-            stroke={theme.palette.error.main}
+            stroke={chartColors[1]}
             strokeWidth={2}
             name="Expenses"
             dot={false}
@@ -138,7 +140,7 @@ function FinancialProjectionChart({ incomes, expenses, savings, selectedMonth, o
           <Line
             type="monotone"
             dataKey="balance"
-            stroke={theme.palette.primary.main}
+            stroke={chartColors[0]}
             strokeWidth={3}
             name="Balance"
             dot={false}
