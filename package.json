@@ -5,7 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "vite",
+    "dev:backend": "cd backend && npm run dev",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -24,6 +26,7 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.2",
     "vite": "^5.0.0"
   }
 }
