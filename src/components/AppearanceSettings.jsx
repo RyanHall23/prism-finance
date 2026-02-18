@@ -30,20 +30,34 @@ function AppearanceSettings() {
     setPrideTheme(theme);
   };
 
-  // Generate circular gradient previews for pride themes
-  const getPridePreview = (colors) => {
-    if (!colors) return '#e0e0e0';
-    
-    const colorArray = [colors.primary, colors.secondary];
-    if (colors.accent) colorArray.push(colors.accent);
-    
-    // Create a conic gradient for circular preview
-    const step = 100 / colorArray.length;
-    const stops = colorArray.map((color, i) => 
-      `${color} ${i * step}%, ${color} ${(i + 1) * step}%`
-    ).join(', ');
-    
-    return `conic-gradient(${stops})`;
+  // Generate flag stripe patterns for pride themes
+  const getFlagPattern = (themeKey) => {
+    switch (themeKey) {
+      case 'transPride':
+        // Trans flag: 5 horizontal stripes (blue, pink, white, pink, blue)
+        return 'linear-gradient(to bottom, #5BCEFA 0%, #5BCEFA 20%, #F5A9B8 20%, #F5A9B8 40%, #FFFFFF 40%, #FFFFFF 60%, #F5A9B8 60%, #F5A9B8 80%, #5BCEFA 80%, #5BCEFA 100%)';
+      
+      case 'biPride':
+        // Bi flag: 3 horizontal stripes (pink 40%, purple 20%, blue 40%)
+        return 'linear-gradient(to bottom, #D60270 0%, #D60270 40%, #9B4F96 40%, #9B4F96 60%, #0038A8 60%, #0038A8 100%)';
+      
+      case 'gayPride':
+        // Rainbow flag: 6 horizontal stripes (red, orange, yellow, green, blue, purple)
+        return 'linear-gradient(to bottom, #E40303 0%, #E40303 16.67%, #FF8C00 16.67%, #FF8C00 33.33%, #FFED00 33.33%, #FFED00 50%, #008026 50%, #008026 66.67%, #24408E 66.67%, #24408E 83.33%, #732982 83.33%, #732982 100%)';
+      
+      case 'nonBinary':
+        // Non-binary flag: 4 horizontal stripes (yellow, white, purple, black)
+        return 'linear-gradient(to bottom, #FCF434 0%, #FCF434 25%, #FFFFFF 25%, #FFFFFF 50%, #9C59D1 50%, #9C59D1 75%, #2C2C2C 75%, #2C2C2C 100%)';
+      
+      case 'lesbian':
+        // Lesbian flag: 5 horizontal stripes (dark orange, orange, white, pink, dark pink)
+        return 'linear-gradient(to bottom, #D62800 0%, #D62800 20%, #FF9A56 20%, #FF9A56 40%, #FFFFFF 40%, #FFFFFF 60%, #D162A4 60%, #D162A4 80%, #A40062 80%, #A40062 100%)';
+      
+      case 'none':
+      default:
+        // Grey circle for "None" option
+        return '#e0e0e0';
+    }
   };
 
   return (
@@ -187,12 +201,13 @@ function AppearanceSettings() {
                       width: 64,
                       height: 64,
                       borderRadius: '50%',
-                      background: getPridePreview(option.colors),
+                      background: getFlagPattern(option.key),
                       border: '3px solid',
                       borderColor: isSelected ? 'primary.main' : 'divider',
                       boxShadow: isSelected ? 4 : 1,
                       transition: 'all 0.3s ease',
                       position: 'relative',
+                      overflow: 'hidden',
                       '&::after': isSelected ? {
                         content: '""',
                         position: 'absolute',
