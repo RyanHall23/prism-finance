@@ -13,10 +13,28 @@ import {
   DialogContentText,
   DialogActions,
   Grid,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import { authAPI } from '../services/api.js';
+import AppearanceSettings from '../components/AppearanceSettings.jsx';
+
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`account-tabpanel-${index}`}
+      aria-labelledby={`account-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
+    </div>
+  );
+}
 
 function AccountPage({ user, onUpdate, onBackToDashboard }) {
+  const [tabValue, setTabValue] = useState(0);
   const [formData, setFormData] = useState({
     username: user?.username || '',
     email: user?.email || '',
@@ -135,7 +153,16 @@ function AccountPage({ user, onUpdate, onBackToDashboard }) {
         </Alert>
       )}
 
-      {/* Profile Section */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+        <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
+          <Tab label="Profile" />
+          <Tab label="Security" />
+          <Tab label="Appearance" />
+        </Tabs>
+      </Box>
+
+      {/* Profile Tab */}
+      <TabPanel value={tabValue} index={0}>
       <Paper sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
           Profile Information
@@ -175,7 +202,10 @@ function AccountPage({ user, onUpdate, onBackToDashboard }) {
           </Grid>
         </form>
       </Paper>
+      </TabPanel>
 
+      {/* Security Tab */}
+      <TabPanel value={tabValue} index={1}>
       {/* Password Section */}
       <Paper sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
@@ -246,6 +276,12 @@ function AccountPage({ user, onUpdate, onBackToDashboard }) {
           Delete Account
         </Button>
       </Paper>
+      </TabPanel>
+
+      {/* Appearance Tab */}
+      <TabPanel value={tabValue} index={2}>
+        <AppearanceSettings />
+      </TabPanel>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>

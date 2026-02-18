@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box, Menu, MenuItem } from '@mui/material';
-import { Palette, AccountCircle } from '@mui/icons-material';
+import { LightMode, DarkMode, AccountCircle } from '@mui/icons-material';
 import { useTheme } from '../contexts/ThemeContext.jsx';
 
 function Header({ user, onLogout, onAccountClick }) {
-  const { selectedTheme, setSelectedTheme, availableThemes } = useTheme();
+  const { baseMode, setBaseMode, effectiveBaseMode } = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [themeAnchorEl, setThemeAnchorEl] = useState(null);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -16,17 +15,15 @@ function Header({ user, onLogout, onAccountClick }) {
     setAnchorEl(null);
   };
 
-  const handleThemeMenu = (event) => {
-    setThemeAnchorEl(event.currentTarget);
-  };
-
-  const handleThemeClose = () => {
-    setThemeAnchorEl(null);
-  };
-
-  const handleThemeChange = (themeKey) => {
-    setSelectedTheme(themeKey);
-    handleThemeClose();
+  const handleThemeToggle = () => {
+    // Toggle between light and dark mode
+    if (baseMode === 'system') {
+      // If in system mode, switch to opposite of effective mode
+      setBaseMode(effectiveBaseMode === 'dark' ? 'light' : 'dark');
+    } else {
+      // Toggle between light and dark
+      setBaseMode(baseMode === 'dark' ? 'light' : 'dark');
+    }
   };
 
   const handleAccount = () => {
@@ -51,24 +48,13 @@ function Header({ user, onLogout, onAccountClick }) {
           </Typography>
         )}
         <Box>
-          <IconButton color="inherit" onClick={handleThemeMenu} title="Change Theme">
-            <Palette />
-          </IconButton>
-          <Menu
-            anchorEl={themeAnchorEl}
-            open={Boolean(themeAnchorEl)}
-            onClose={handleThemeClose}
+          <IconButton 
+            color="inherit" 
+            onClick={handleThemeToggle} 
+            title={effectiveBaseMode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
-            {availableThemes.map((theme) => (
-              <MenuItem 
-                key={theme.key} 
-                onClick={() => handleThemeChange(theme.key)}
-                selected={selectedTheme === theme.key}
-              >
-                {theme.name}
-              </MenuItem>
-            ))}
-          </Menu>
+            {effectiveBaseMode === 'dark' ? <LightMode /> : <DarkMode />}
+          </IconButton>
           {user && (
             <>
               <IconButton

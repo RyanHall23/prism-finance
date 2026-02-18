@@ -1,53 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button,
   TextField,
   FormControlLabel,
   Checkbox,
-  Paper,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
   MenuItem,
   Grid,
 } from '@mui/material';
-import { Delete, Add, Edit } from '@mui/icons-material';
-import { formatCurrency } from '../utils/calculations.js';
-import EditExpenseDialog from './EditExpenseDialog.jsx';
 
-function ExpenseSection({ expenses, setExpenses }) {
-  const [showForm, setShowForm] = useState(false);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editingExpense, setEditingExpense] = useState(null);
+function EditExpenseDialog({ open, onClose, expense, onSave }) {
   const [formData, setFormData] = useState({
     amount: '',
     category: 'Subscription',
-    date: new Date().toISOString().split('T')[0],
-    recurring: true,
+    date: '',
+    recurring: false,
     notes: '',
     name: '',
     label: '',
     frequency: 'monthly',
-    start_date: new Date().toISOString().split('T')[0],
+    start_date: '',
     end_date: '',
   });
+
+  useEffect(() => {
+    if (expense) {
+      setFormData({
+        amount: expense.amount || '',
+        category: expense.category || 'Subscription',
+        date: expense.date || new Date().toISOString().split('T')[0],
+        recurring: expense.recurring || false,
+        notes: expense.notes || '',
+        name: expense.name || '',
+        label: expense.label || '',
+        frequency: expense.frequency || 'monthly',
+        start_date: expense.start_date || expense.date || new Date().toISOString().split('T')[0],
+        end_date: expense.end_date || '',
+      });
+    }
+  }, [expense]);
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
     
-    // Auto-sync date field with start_date for consistency
     if (name === 'start_date') {
       setFormData({
         ...formData,
         [name]: newValue,
-        date: newValue, // Keep date in sync with start_date
+        date: newValue,
       });
     } else {
       setFormData({
@@ -64,65 +68,22 @@ function ExpenseSection({ expenses, setExpenses }) {
       return;
     }
 
-    const newExpense = {
-      id: Date.now(),
+    const updatedExpense = {
+      ...expense,
       ...formData,
       amount: parseFloat(formData.amount),
     };
 
-    setExpenses([...expenses, newExpense]);
-    setFormData({
-      amount: '',
-      category: 'Subscription',
-      date: new Date().toISOString().split('T')[0],
-      recurring: true,
-      notes: '',
-      name: '',
-      label: '',
-      frequency: 'monthly',
-      start_date: new Date().toISOString().split('T')[0],
-      end_date: '',
-    });
-    setShowForm(false); // Hide form after adding
-  };
-
-  const handleDelete = (id) => {
-    setExpenses(expenses.filter((expense) => expense.id !== id));
-  };
-
-  const handleEdit = (expense) => {
-    setEditingExpense(expense);
-    setEditDialogOpen(true);
-  };
-
-  const handleSaveEdit = (updatedExpense) => {
-    setExpenses(expenses.map((expense) => 
-      expense.id === updatedExpense.id ? updatedExpense : expense
-    ));
-    setEditDialogOpen(false);
-    setEditingExpense(null);
+    onSave(updatedExpense);
   };
 
   const categories = ['Subscription', 'Bills', 'Mortgage', 'Rent', 'Insurance', 'Utilities', 'Other'];
 
   return (
-    <Box>
-      <Box sx={{ mb: 2 }}>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Hide Form' : 'Add Expense'}
-        </Button>
-      </Box>
-
-      {showForm && (
-        <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Add Expense
-          </Typography>
-        <form onSubmit={handleSubmit}>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>Edit Expense</DialogTitle>
+      <form onSubmit={handleSubmit}>
+        <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} md={4}>
               <TextField
@@ -240,85 +201,17 @@ function ExpenseSection({ expenses, setExpenses }) {
                 rows={2}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Button type="submit" variant="contained" startIcon={<Add />}>
-                Add Expense
-              </Button>
-            </Grid>
           </Grid>
-        </form>
-      </Paper>
-      )}
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Amount</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Label</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Recurring</TableCell>
-              <TableCell>Frequency</TableCell>
-              <TableCell>Notes</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {expenses.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={9} align="center">
-                  No expense entries yet
-                </TableCell>
-              </TableRow>
-            ) : (
-              expenses.map((expense) => (
-                <TableRow key={expense.id}>
-                  <TableCell>{formatCurrency(expense.amount)}</TableCell>
-                  <TableCell>{expense.name || '-'}</TableCell>
-                  <TableCell>{expense.label || '-'}</TableCell>
-                  <TableCell>{expense.category}</TableCell>
-                  <TableCell>{expense.date}</TableCell>
-                  <TableCell>{expense.recurring ? 'Yes' : 'No'}</TableCell>
-                  <TableCell>{expense.recurring ? (expense.frequency || 'Monthly') : '-'}</TableCell>
-                  <TableCell>{expense.notes || '-'}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleEdit(expense)}
-                      size="small"
-                      title="Edit"
-                    >
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDelete(expense.id)}
-                      size="small"
-                      title="Delete"
-                    >
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <EditExpenseDialog
-        open={editDialogOpen}
-        onClose={() => {
-          setEditDialogOpen(false);
-          setEditingExpense(null);
-        }}
-        expense={editingExpense}
-        onSave={handleSaveEdit}
-      />
-    </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="submit" variant="contained">
+            Save Changes
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 }
 
-export default ExpenseSection;
+export default EditExpenseDialog;
